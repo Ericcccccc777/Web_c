@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notice Radar</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Local Notice Radar</p>
+          <h1>政策公告收集台</h1>
+        </div>
+        <button id="runButton" class="run-button" type="button">
+          <span class="run-dot"></span>
+          运行
+        </button>
+      </header>
+
+      <section class="status-strip" aria-live="polite">
+        <div>
+          <span class="label">查看日期</span>
+          <input id="datePicker" type="date" />
+        </div>
+        <div>
+          <span class="label">最近运行</span>
+          <strong id="lastRun">尚未运行</strong>
+        </div>
+        <div>
+          <span class="label">今日结果</span>
+          <strong id="summary">等待运行</strong>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="notice-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Collected</p>
+              <h2 id="resultTitle">公告列表</h2>
+            </div>
+            <span id="noticeCount" class="count-pill">0 条</span>
+          </div>
+          <div id="noticeList" class="notice-list empty-state">选择日期或点击运行查看公告。</div>
+          <div id="warningList" class="warning-list"></div>
+        </section>
+
+        <aside class="site-panel">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Sources</p>
+              <h2>站点管理</h2>
+            </div>
+            <button id="addSiteButton" class="icon-button" type="button" aria-label="添加站点" title="添加站点">+</button>
+          </div>
+          <div id="siteList" class="site-list"></div>
+        </aside>
+      </section>
+    </main>
+
+    <div id="siteModal" class="modal-backdrop" hidden>
+      <form id="siteForm" class="site-form">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Website</p>
+            <h2 id="siteFormTitle">添加站点</h2>
+          </div>
+          <button id="closeSiteModal" class="icon-button ghost" type="button" aria-label="关闭" title="关闭">×</button>
+        </div>
+        <input id="siteId" type="hidden" />
+        <label>
+          站点名称
+          <input id="siteName" name="name" required placeholder="例如：深圳市科技创新局" />
+        </label>
+        <label>
+          网页地址
+          <input id="siteUrl" name="url" required placeholder="https://example.gov.cn/tzgg/" />
+        </label>
+        <label>
+          抓取地址
+          <input id="siteFetchUrl" name="fetchUrl" placeholder="可选，HTTPS 不兼容时填 HTTP 地址" />
+        </label>
+        <label>
+          标题关键词
+          <input id="siteKeywords" name="titleKeywords" placeholder="关于，通知，公告，公示" />
+        </label>
+        <label>
+          抓取页数
+          <input id="sitePageCount" name="pageCount" type="number" min="1" max="10" step="1" />
+        </label>
+        <div class="form-actions">
+          <button id="deleteSiteButton" class="danger-button" type="button" hidden>删除</button>
+          <button id="cancelSiteForm" class="secondary-button" type="button">取消</button>
+          <button class="primary-button" type="submit">保存</button>
+        </div>
+        <p id="siteFormError" class="form-error"></p>
+      </form>
+    </div>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
