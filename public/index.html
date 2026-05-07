@@ -20,16 +20,27 @@
       </header>
 
       <section class="status-strip" aria-live="polite">
-        <div>
+        <div class="date-cell">
           <span class="label">查看日期</span>
-          <input id="datePicker" type="date" />
+          <button id="datePickerButton" class="date-picker-button" type="button">
+            <span id="datePickerText">选择日期</span>
+            <span>⌄</span>
+          </button>
+          <div id="dateArchivePanel" class="date-archive-panel" hidden>
+            <input id="datePicker" type="date" />
+            <div id="dateArchiveList" class="date-archive-list"></div>
+          </div>
+        </div>
+        <div class="schedule-cell">
+          <span class="label">自动抓取</span>
+          <div class="schedule-row">
+            <input id="scheduleMorning" type="time" />
+            <input id="scheduleAfternoon" type="time" />
+            <button id="saveScheduleButton" class="small-button" type="button">保存</button>
+          </div>
         </div>
         <div>
-          <span class="label">最近运行</span>
-          <strong id="lastRun">尚未运行</strong>
-        </div>
-        <div>
-          <span class="label">今日结果</span>
+          <span class="label">当前结果</span>
           <strong id="summary">等待运行</strong>
         </div>
       </section>
@@ -40,8 +51,19 @@
             <div>
               <p class="eyebrow">Collected</p>
               <h2 id="resultTitle">公告列表</h2>
+              <p id="captureTime" class="capture-time">尚无抓取记录</p>
             </div>
-            <span id="noticeCount" class="count-pill">0 条</span>
+            <div class="heading-actions">
+              <button id="exportButton" class="secondary-button compact-button" type="button">批量导出</button>
+              <span id="noticeCount" class="count-pill">0 条</span>
+            </div>
+          </div>
+          <div id="batchExportBar" class="batch-export-bar" hidden>
+            <span id="batchExportCount">已选择 0 条</span>
+            <div>
+              <button id="cancelBatchExportButton" class="secondary-button compact-button" type="button">取消</button>
+              <button id="confirmBatchExportButton" class="primary-button compact-button" type="button" disabled>确认导出</button>
+            </div>
           </div>
           <div id="noticeList" class="notice-list empty-state">选择日期或点击运行查看公告。</div>
           <div id="warningList" class="warning-list"></div>
@@ -96,6 +118,44 @@
           <button class="primary-button" type="submit">保存</button>
         </div>
         <p id="siteFormError" class="form-error"></p>
+      </form>
+    </div>
+
+    <div id="exportModal" class="modal-backdrop" hidden>
+      <form id="exportForm" class="site-form">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Export</p>
+            <h2>导出公告</h2>
+          </div>
+          <button id="closeExportModal" class="icon-button ghost" type="button" aria-label="关闭" title="关闭">×</button>
+        </div>
+        <fieldset class="format-choice">
+          <label>
+            <input type="radio" name="exportFormat" value="word" checked />
+            Word
+          </label>
+          <label>
+            <input type="radio" name="exportFormat" value="pdf" />
+            PDF
+          </label>
+        </fieldset>
+        <label>
+          文件名
+          <div class="filename-row">
+            <input id="exportFilename" required />
+            <span id="exportSuffix" class="file-suffix">.word</span>
+          </div>
+        </label>
+        <label>
+          导出路径
+          <input id="exportPath" required />
+        </label>
+        <div class="form-actions">
+          <button id="cancelExportForm" class="secondary-button" type="button">取消</button>
+          <button class="primary-button" type="submit">导出</button>
+        </div>
+        <p id="exportFormError" class="form-error"></p>
       </form>
     </div>
 

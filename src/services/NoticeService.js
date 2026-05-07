@@ -10,13 +10,14 @@ export class NoticeService {
     this.siteStore = siteStore;
   }
 
-  async run(date = todayISO()) {
+  async run(date = todayISO(), { source = "manual" } = {}) {
     const sites = await this.siteStore.list();
     const results = await Promise.all(sites.map((site) => this.crawler.crawl(site)));
     const notices = results.flatMap((result) => result.notices);
     const run = {
       id: new Date().toISOString(),
       date,
+      source,
       results,
       noticesForDate: notices.filter((notice) => notice.date === date),
       warnings: this.buildWarnings(results, date),
@@ -30,14 +31,26 @@ export class NoticeService {
   async archive(date) {
     const notices = await this.store.noticesByDate(date);
     const latestRun = await this.store.latestRun();
+    const capturedAt = await this.store.latestCaptureForDate(date);
     const sites = await this.siteStore.list();
 
     return {
       date,
       notices,
       latestRun,
+      capturedAt,
       sites: sites.map((site) => this.publicSite(site))
     };
+  }
+
+  async archiveDates() {
+    return {
+      dates: await this.store.archiveDates()
+    };
+  }
+
+  async cleanupExpired() {
+    await this.store.cleanupExpired();
   }
 
   async sites() {
