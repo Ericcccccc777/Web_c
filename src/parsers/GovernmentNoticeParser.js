@@ -1,10 +1,9 @@
-import * as cheerio from "cheerio";
-import { URL } from "node:url";
-import { Notice } from "../models/Notice.js";
+const cheerio = require("cheerio");
+const { Notice } = require("../models/Notice.js");
 
 const DATE_PATTERN = /20\d{2}-\d{2}-\d{2}/;
 
-export class GovernmentNoticeParser {
+class GovernmentNoticeParser {
   parse(site, html) {
     const $ = cheerio.load(html);
     const notices = [];
@@ -76,3 +75,5 @@ export class GovernmentNoticeParser {
     return match ? match[0] : "";
   }
 }
+
+module.exports = { GovernmentNoticeParser };

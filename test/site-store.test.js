@@ -1,9 +1,9 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
-import path from "node:path";
-import os from "node:os";
-import { SiteStore } from "../src/storage/SiteStore.js";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const { mkdtemp, rm } = require("node:fs/promises");
+const path = require("node:path");
+const os = require("node:os");
+const { SiteStore } = require("../src/storage/SiteStore.js");
 
 test("upserts editable site config", async () => {
   const dir = await mkdtemp(path.join(os.tmpdir(), "notice-sites-"));

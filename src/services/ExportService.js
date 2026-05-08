@@ -1,11 +1,9 @@
-import { createWriteStream, existsSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { finished } from "node:stream/promises";
-import * as cheerio from "cheerio";
-import PDFDocument from "pdfkit";
+const { mkdir, writeFile } = require("node:fs/promises");
+const path = require("node:path");
+const cheerio = require("cheerio");
+const { Document, Packer, Paragraph, AlignmentType } = require("docx");
 
-export class ExportService {
+class ExportService {
   constructor({ noticeStore, settingsStore }) {
     this.noticeStore = noticeStore;
     this.settingsStore = settingsStore;
@@ -22,78 +20,93 @@ export class ExportService {
       return !siteId || notice.siteId === siteId;
     });
     const posts = await Promise.all(notices.map((notice) => this.fetchPost(notice)));
-    const normalizedFormat = format === "pdf" ? "pdf" : "word";
-    const extension = normalizedFormat === "pdf" ? ".pdf" : ".word";
     const safeName = this.safeFilename(filename || `${date} 公告正文`);
-    const outputPath = path.join(settings.exportPath, `${safeName}${extension}`);
+    const outputPath = path.join(settings.exportPath, `${safeName}.docx`);
 
     await mkdir(settings.exportPath, { recursive: true });
-
-    if (normalizedFormat === "pdf") {
-      await this.writePdf(outputPath, this.htmlDocument({ date, posts }));
-    } else {
-      await writeFile(outputPath, this.htmlDocument({ date, posts }), "utf8");
-    }
+    await this.writeDocx(outputPath, date, posts);
 
     return {
       path: outputPath,
-      format: normalizedFormat,
+      format: "word",
       count: notices.length
     };
   }
 
-  async writePdf(outputPath, html) {
-    const document = new PDFDocument({ margin: 48, size: "A4" });
-    const stream = createWriteStream(outputPath);
-    document.pipe(stream);
-    this.applyPdfFont(document);
-    this.writePdfContent(document, html);
-    document.end();
-    await finished(stream);
-  }
+  async writeDocx(outputPath, date, posts) {
+    const paragraphs = [];
 
-  applyPdfFont(document) {
-    const fontPath = [
-      "/Library/Fonts/Arial Unicode.ttf",
-      "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
-      "/System/Library/Fonts/PingFang.ttc",
-      "/System/Library/Fonts/Supplemental/Songti.ttc"
-    ].find((item) => existsSync(item));
+    paragraphs.push(
+      new Paragraph({
+        text: `${date} 公告正文`,
+        bold: true,
+        size: 28,
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 200 }
+      })
+    );
 
-    if (fontPath) {
-      document.font(fontPath);
-    }
-  }
-
-  writePdfContent(document, html) {
-    const title = html.match(/<h1>(.*?)<\/h1>/s)?.[1] || "公告正文";
-    const meta = html.match(/<div class="meta">(.*?)<\/div>/s)?.[1] || "";
-    const posts = [...html.matchAll(/<section class="post">\s*<h2>(.*?)<\/h2>\s*<div class="small">(.*?)<\/div>\s*<div class="small"><a href="(.*?)">.*?<\/a><\/div>\s*<div class="body">([\s\S]*?)<\/div>\s*<\/section>/g)];
-
-    document.fontSize(20).fillColor("#1d1d1f").text(this.unescapeHtml(title), { lineGap: 4 });
-    document.moveDown(0.4);
-    document.fontSize(10).fillColor("#666666").text(this.unescapeHtml(meta));
-    document.moveDown(0.8);
+    paragraphs.push(
+      new Paragraph({
+        text: `共 ${posts.length} 篇，导出时间：${new Date().toLocaleString("zh-CN")}`,
+        size: 20,
+        color: "666666",
+        spacing: { after: 400 }
+      })
+    );
 
     if (posts.length === 0) {
-      document.fontSize(12).fillColor("#1d1d1f").text("当前日期暂无公告。");
-      return;
+      paragraphs.push(
+        new Paragraph({
+          text: "当前日期暂无公告。",
+          size: 22
+        })
+      );
+    } else {
+      for (const post of posts) {
+        paragraphs.push(
+          new Paragraph({
+            text: post.title,
+            bold: true,
+            size: 24,
+            spacing: { before: 200, after: 100 }
+          })
+        );
+
+        paragraphs.push(
+          new Paragraph({
+            text: `${post.siteName} · ${post.date}${post.source ? ` · ${post.source}` : ""}${post.publishTime ? ` · ${post.publishTime}` : ""}`,
+            size: 18,
+            color: "666666",
+            spacing: { after: 80 }
+          })
+        );
+
+        paragraphs.push(
+          new Paragraph({
+            text: post.url,
+            size: 18,
+            color: "0057b8",
+            spacing: { after: 200 }
+          })
+        );
+
+        paragraphs.push(
+          new Paragraph({
+            text: this.htmlToText(post.bodyHtml),
+            size: 22,
+            spacing: { after: 200 }
+          })
+        );
+      }
     }
 
-    for (const [, postTitle, postMeta, postUrl, postBody] of posts) {
-      document.moveTo(document.x, document.y).lineTo(545, document.y).strokeColor("#dddddd").stroke();
-      document.moveDown(0.6);
-      document.fontSize(14).fillColor("#1d1d1f").text(this.unescapeHtml(postTitle), { lineGap: 3 });
-      document.moveDown(0.2);
-      document.fontSize(9).fillColor("#666666").text(this.unescapeHtml(postMeta));
-      document.fontSize(9).fillColor("#0057b8").text(this.unescapeHtml(postUrl), {
-        link: this.unescapeHtml(postUrl),
-        underline: false
-      });
-      document.moveDown(0.6);
-      document.fontSize(11).fillColor("#1d1d1f").text(this.htmlToText(postBody), { lineGap: 4 });
-      document.moveDown(0.8);
-    }
+    const doc = new Document({
+      sections: [{ children: paragraphs }]
+    });
+
+    const buffer = await Packer.toBuffer(doc);
+    await writeFile(outputPath, buffer);
   }
 
   htmlDocument({ date, posts }) {
@@ -259,3 +272,5 @@ export class ExportService {
       .replaceAll("&amp;", "&");
   }
 }
+
+module.exports = { ExportService };

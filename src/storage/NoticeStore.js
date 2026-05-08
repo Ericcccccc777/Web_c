@@ -1,8 +1,8 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { daysAgoISO, nowPlusDaysISO } from "../utils/date.js";
+const { mkdir, readFile, writeFile } = require("node:fs/promises");
+const path = require("node:path");
+const { daysAgoISO, nowPlusDaysISO } = require("../utils/date.js");
 
-export class NoticeStore {
+class NoticeStore {
   constructor(filePath = path.join(process.cwd(), "data", "notices.json")) {
     this.filePath = filePath;
   }
@@ -112,3 +112,5 @@ export class NoticeStore {
     });
   }
 }
+
+module.exports = { NoticeStore };

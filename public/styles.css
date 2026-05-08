@@ -162,6 +162,10 @@ input[type="time"] {
   cursor: pointer;
 }
 
+.date-picker-button > span:last-child {
+  line-height: 1;
+}
+
 .date-archive-panel {
   position: absolute;
   z-index: 5;
@@ -306,6 +310,9 @@ input[type="time"] {
 }
 
 .icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 34px;
   height: 34px;
   border: 1px solid var(--line);

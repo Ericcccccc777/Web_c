@@ -1,10 +1,10 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
-import path from "node:path";
-import os from "node:os";
-import { NoticeStore } from "../src/storage/NoticeStore.js";
-import { daysAgoISO } from "../src/utils/date.js";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const { mkdtemp, rm } = require("node:fs/promises");
+const path = require("node:path");
+const os = require("node:os");
+const { NoticeStore } = require("../src/storage/NoticeStore.js");
+const { daysAgoISO } = require("../src/utils/date.js");
 
 test("keeps only the requested old date for one day after a manual old-date run", async () => {
   const dir = await mkdtemp(path.join(os.tmpdir(), "notice-store-"));

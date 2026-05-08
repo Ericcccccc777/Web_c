@@ -1,10 +1,10 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { defaultSites } from "../config/sites.js";
+const { mkdir, readFile, writeFile } = require("node:fs/promises");
+const path = require("node:path");
+const { defaultSites } = require("../config/sites.js");
 
 const DEFAULT_KEYWORDS = ["关于", "通知", "公告", "公示"];
 
-export class SiteStore {
+class SiteStore {
   constructor(filePath = path.join(process.cwd(), "data", "sites.json")) {
     this.filePath = filePath;
   }
@@ -126,10 +126,12 @@ export class SiteStore {
     const base = `${name}-${url}`
       .toLowerCase()
       .replace(/https?:\/\//g, "")
-      .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+      .replace(/[^a-z0-9一-龥]+/g, "-")
       .replace(/^-|-$/g, "")
       .slice(0, 48);
 
     return `${base || "site"}-${Date.now().toString(36)}`;
   }
 }
+
+module.exports = { SiteStore };

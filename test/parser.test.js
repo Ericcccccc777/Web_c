@@ -1,6 +1,6 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { GovernmentNoticeParser } from "../src/parsers/GovernmentNoticeParser.js";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const { GovernmentNoticeParser } = require("../src/parsers/GovernmentNoticeParser.js");
 
 test("parses notice titles with nearby ISO dates", () => {
   const parser = new GovernmentNoticeParser();

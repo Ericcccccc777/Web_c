@@ -1,6 +1,6 @@
-import { GovernmentNoticeParser } from "../parsers/GovernmentNoticeParser.js";
+const { GovernmentNoticeParser } = require("../parsers/GovernmentNoticeParser.js");
 
-export class NoticeCrawler {
+class NoticeCrawler {
   constructor({ parser = new GovernmentNoticeParser(), timeoutMs = 30000 } = {}) {
     this.parser = parser;
     this.timeoutMs = timeoutMs;
@@ -127,3 +127,5 @@ export class NoticeCrawler {
     return error.message || "爬取失败。";
   }
 }
+
+module.exports = { NoticeCrawler };

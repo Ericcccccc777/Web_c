@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(.\\\\local-notice-radar.exe)",
+      "PowerShell(Start-Sleep -Seconds 3; Invoke-WebRequest -Uri \"http://localhost:3333/api/today\" -UseBasicParsing -TimeoutSec 5 2>&1、)",
+      "PowerShell(Set-Location \"E:\\\\Code\\\\Web_c\\\\dist\"; $proc = Start-Process -FilePath \".\\\\local-notice-radar.exe\" -PassThru -Wait -NoNewWindow 2>&1; Write-Output \"Exit code: $\\($proc.ExitCode\\)\")",
+      "PowerShell(Stop-Job *)",
+      "PowerShell($proc = Start-Process -FilePath \"E:\\\\Code\\\\Web_c\\\\dist\\\\local-notice-radar.exe\" -PassThru -WindowStyle Normal; Start-Sleep -Seconds 5; $result = try { Invoke-WebRequest -Uri \"http://localhost:3333/api/today\" -UseBasicParsing -TimeoutSec 3 } catch { $null }; $proc.Kill\\(\\); if \\($result\\) { $result.Content } else { \"FAILED\" })",
+      "PowerShell(Out-Null *)",
+      "PowerShell($proc = Start-Process -FilePath \"E:\\\\Code\\\\Web_c\\\\dist\\\\local-notice-radar.exe\" -PassThru -WindowStyle Normal; Start-Sleep -Seconds 5; $result = try { Invoke-WebRequest -Uri \"http://localhost:3333/api/today\" -UseBasicParsing -TimeoutSec 3 } catch { $null }; if \\(-not $proc.HasExited\\) { $proc.Kill\\(\\) }; if \\($result\\) { \"SUCCESS: \" + $result.Content } else { \"FAILED\" })",
+      "PowerShell(Get-Process *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

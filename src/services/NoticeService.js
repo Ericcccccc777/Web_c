@@ -1,9 +1,9 @@
-import { NoticeCrawler } from "../crawlers/NoticeCrawler.js";
-import { SiteStore } from "../storage/SiteStore.js";
-import { NoticeStore } from "../storage/NoticeStore.js";
-import { todayISO } from "../utils/date.js";
+const { NoticeCrawler } = require("../crawlers/NoticeCrawler.js");
+const { SiteStore } = require("../storage/SiteStore.js");
+const { NoticeStore } = require("../storage/NoticeStore.js");
+const { todayISO } = require("../utils/date.js");
 
-export class NoticeService {
+class NoticeService {
   constructor({ crawler = new NoticeCrawler(), store = new NoticeStore(), siteStore = new SiteStore() } = {}) {
     this.crawler = crawler;
     this.store = store;
@@ -103,3 +103,5 @@ export class NoticeService {
     };
   }
 }
+
+module.exports = { NoticeService };

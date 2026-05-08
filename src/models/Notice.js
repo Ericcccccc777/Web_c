@@ -1,4 +1,4 @@
-export class Notice {
+class Notice {
   constructor({ siteId, siteName, title, date, url }) {
     this.siteId = siteId;
     this.siteName = siteName;
@@ -11,3 +11,5 @@ export class Notice {
     return `${this.siteId}:${this.date}:${this.title}`;
   }
 }
+
+module.exports = { Notice };

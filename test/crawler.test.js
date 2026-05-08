@@ -1,6 +1,6 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { NoticeCrawler } from "../src/crawlers/NoticeCrawler.js";
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const { NoticeCrawler } = require("../src/crawlers/NoticeCrawler.js");
 
 test("builds common government index pagination urls", () => {
   const crawler = new NoticeCrawler();

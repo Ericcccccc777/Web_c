@@ -3,19 +3,28 @@
   "version": "0.1.0",
   "description": "Local localhost notice crawler dashboard for daily government website updates.",
   "main": "src/server.js",
-  "type": "module",
   "scripts": {
     "dev": "node src/server.js",
     "start": "node src/server.js",
     "test": "node --test",
-    "build": "node scripts/verify-build.js"
+    "build": "node scripts/verify-build.js",
+    "package:win": "pkg . --targets node18-win-x64 --output dist/local-notice-radar.exe"
+  },
+  "bin": "src/server.js",
+  "pkg": {
+    "assets": [
+      "public/**/*"
+    ]
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "express": "^4.19.2",
-    "pdfkit": "^0.18.0"
+    "cheerio": "^1.0.0-rc.12",
+    "docx": "^8.5.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
   }
 }

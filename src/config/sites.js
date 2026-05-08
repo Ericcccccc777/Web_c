@@ -1,4 +1,4 @@
-export const defaultSites = [
+const defaultSites = [
   {
     id: "sz-stic",
     name: "深圳市科技创新局",
@@ -26,3 +26,5 @@ export const defaultSites = [
     titleKeywords: ["广东省科学技术厅", "关于", "通知", "公示", "公告", "报告"]
   }
 ];
+
+module.exports = { defaultSites };

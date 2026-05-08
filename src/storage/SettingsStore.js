@@ -1,13 +1,13 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
+const { mkdir, readFile, writeFile } = require("node:fs/promises");
+const os = require("node:os");
+const path = require("node:path");
 
 const DEFAULT_SETTINGS = {
   scheduleTimes: ["08:00", "14:00"],
   exportPath: path.join(os.homedir(), "Downloads")
 };
 
-export class SettingsStore {
+class SettingsStore {
   constructor(filePath = path.join(process.cwd(), "data", "settings.json")) {
     this.filePath = filePath;
   }
@@ -58,3 +58,5 @@ export class SettingsStore {
     return normalized.length > 0 ? [...new Set(normalized)].sort() : DEFAULT_SETTINGS.scheduleTimes;
   }
 }
+
+module.exports = { SettingsStore };

@@ -1,4 +1,4 @@
-export class RunScheduler {
+class RunScheduler {
   constructor({ service, settingsStore }) {
     this.service = service;
     this.settingsStore = settingsStore;
@@ -60,3 +60,5 @@ export class RunScheduler {
     return value;
   }
 }
+
+module.exports = { RunScheduler };
